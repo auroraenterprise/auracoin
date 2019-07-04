@@ -8,7 +8,13 @@ bc.append(blockchain.Block(
         "body": "Hello, world! This is the genesis block."
     }],
     previousHash = "0" * 64,
-    address = ""
+    address = "0000000000"
 ))
+
+print(bc.blocks, bc.blocks[-1].data, bc.blocks[-1].hash)
+
+myAddressInfo = blockchain.newAddress(bc.blocks[-1].hash, "0000000000")
+
+bc.append(myAddressInfo[0])
 
 print(bc.blocks, bc.blocks[-1].data, bc.blocks[-1].hash)

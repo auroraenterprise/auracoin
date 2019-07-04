@@ -24,7 +24,7 @@ class Block:
     def mine(self, address):
         self.data.insert(0, {
             "type": "transaction",
-            "body": transactions.newReward("0" * 128)
+            "body": transactions.newReward(address)
         })
 
         while not self.hash.startswith("0" * difficulty):
@@ -40,3 +40,17 @@ class Blockchain:
         # TODO: Add verification, maybe even move to new method
 
         self.blocks.append(block)
+
+def newAddress(previousHash, address, timestamp = datetime.datetime.now().timestamp()):
+    info = transactions.newAddress()
+
+    return (
+            Block([{
+            "type": "registration",
+            "body": {
+                "address": info["address"],
+                "publicKey": info["publicKey"]
+            }
+        }], previousHash, address, timestamp),
+        info
+    )

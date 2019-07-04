@@ -1,8 +1,9 @@
 import datetime
 import hashlib
 
+from src import transactions
+
 difficulty = 5
-reward = 10 ** 6
 
 class Block:
     def __init__(self, data, previousHash, address, timestamp = datetime.datetime.now().timestamp()):
@@ -21,13 +22,9 @@ class Block:
         ).encode("utf-8")).hexdigest()
     
     def mine(self, address):
-        # TODO: Add transaction signing
-
         self.data.insert(0, {
             "type": "transaction",
-            "from": "[coinbase]",
-            "to": address,
-            "amount": reward
+            "body": transactions.newReward("0" * 128)
         })
 
         while not self.hash.startswith("0" * difficulty):

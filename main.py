@@ -5,7 +5,7 @@ bc = blockchain.Blockchain()
 bc.append(blockchain.Block(
     data = [{
         "type": "data",
-        "value": "Hello, world! This is the genesis block."
+        "body": "Hello, world! This is the genesis block."
     }],
     previousHash = "0" * 64,
     address = ""

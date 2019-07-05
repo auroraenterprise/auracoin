@@ -1,6 +1,7 @@
 import ecdsa
 import base64
 import hashlib
+import random
 
 from src.base40 import Base40
 
@@ -10,9 +11,10 @@ COINBASE_PRIVATE_KEY = "ae81085a32fe78b53cee28dd9fd325e8045c78e9b73906a5bfc1590c
 
 BLOCK_REWARD = 10 ** 8
 ADDRESS_LENGTH = 10
+TRANSACTION_NONCE_RANGE = (2 ** 64) - 1
 
 class Transaction:
-    def __init__(self, sender, senderPublicKey, receiver, amount, certificate, signature):
+    def __init__(self, sender, senderPublicKey, receiver, amount, certificate, signature, nonce):
         assert len(sender) == ADDRESS_LENGTH
         assert len(senderPublicKey) == 128
         assert len(receiver) == ADDRESS_LENGTH
@@ -24,9 +26,10 @@ class Transaction:
         self.amount = amount
         self.certificate = certificate
         self.signature = signature
+        self.nonce = nonce
 
     def getCertificate(self):
-        return str(self.sender) + str(self.senderPublicKey) + str(self.receiver) + str(self.amount)
+        return str(self.sender) + str(self.senderPublicKey) + str(self.receiver) + str(self.amount) + str(self.nonce)
 
     def verify(self):
         if self.certificate == self.getCertificate():
@@ -59,4 +62,4 @@ def newReward(receiver):
     certificate = str(COINBASE_ADDRESS) + str(COINBASE_PUBLIC_KEY) + str(receiver) + str(BLOCK_REWARD)
     signature = bytes.hex(signingKey.sign(certificate.encode("utf-8")))
 
-    return Transaction(COINBASE_ADDRESS, COINBASE_PUBLIC_KEY, receiver, BLOCK_REWARD, certificate, signature)
+    return Transaction(COINBASE_ADDRESS, COINBASE_PUBLIC_KEY, receiver, BLOCK_REWARD, certificate, signature, random.randint(0, TRANSACTION_NONCE_RANGE))

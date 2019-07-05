@@ -13,18 +13,21 @@ class Base40:
         division = 0
         modulo = 0
 
-        while (number >= self.base):
-            division = number // self.base
-            modulo = number - (self.base * division)
+        if number < self.base:
+            return self.digits[number]
+        else:
+            while (number >= self.base):
+                division = number // self.base
+                modulo = number - (self.base * division)
 
-            final = self.digits[modulo] + final
+                final = self.digits[modulo] + final
 
-            number = division
-        
-        if number > 0:
-            final = self.digits[division] + final
-        
-        return final
+                number = division
+            
+            if number > 0:
+                final = self.digits[division] + final
+            
+            return final
     
     def decode(self, value):
         final = 0

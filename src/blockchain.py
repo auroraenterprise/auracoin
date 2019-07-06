@@ -55,7 +55,7 @@ class Blockchain:
         }
 
         for i in range(0, len(self.blocks)):
-            if verbose: print("- Validating block " + str(i) + " of " + str(len(self.blocks)) + " in blockchain... (" + str((i / len(self.blocks)) * 100) + "%)")
+            if verbose: print("- Validating block " + str(i) + " (" + str(i + 1) + "/" + str(len(self.blocks)) + ") in blockchain... (" + str((i / len(self.blocks)) * 100) + "%)")
 
             thisBlock = self.blocks[i]
 
@@ -82,7 +82,7 @@ class Blockchain:
             minerAlreadyRewarded = False
             
             for d in range(0, len(thisBlock.data)):
-                if verbose: print("    - Verifying data " + str(d) + " of " + str(len(thisBlock.data)) + " in block " + str(i) + " of " + str(len(self.blocks)) + "... (" + str((i / len(self.blocks)) * 100) + "% > " + str((d / len(thisBlock.data)) * 100) + "%)")
+                if verbose: print("    - Verifying data " + str(d) + " (" + str(d + 1) + "/" + str(len(thisBlock.data)) + ") in block " + str(i) + " (" + str(i + 1) + "/" + str(len(self.blocks)) + ")... (" + str((i / len(self.blocks)) * 100) + "% > " + str((d / len(thisBlock.data)) * 100) + "%)")
 
                 thisData = thisBlock.data[d]
 

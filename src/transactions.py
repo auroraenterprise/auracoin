@@ -46,8 +46,8 @@ def newAddress():
     signingKey = ecdsa.SigningKey.generate(curve = ecdsa.SECP256k1)
     verifyingKey = signingKey.get_verifying_key()
 
-    publicKey = bytes.hex(signingKey.to_string())
-    privateKey = bytes.hex(verifyingKey.to_string())
+    publicKey = bytes.hex(verifyingKey.to_string())
+    privateKey = bytes.hex(signingKey.to_string())
 
     address = Base40().encode(int(hashlib.sha256(publicKey.encode("utf-8")).hexdigest(), 16))[:ADDRESS_LENGTH]
 
@@ -58,8 +58,9 @@ def newAddress():
     }
 
 def newReward(receiver):
+    nonce = random.randint(0, TRANSACTION_NONCE_RANGE)
     signingKey = ecdsa.SigningKey.from_string(bytes.fromhex(COINBASE_PRIVATE_KEY), curve = ecdsa.SECP256k1)
-    certificate = str(COINBASE_ADDRESS) + str(COINBASE_PUBLIC_KEY) + str(receiver) + str(BLOCK_REWARD)
+    certificate = str(COINBASE_ADDRESS) + str(COINBASE_PUBLIC_KEY) + str(receiver) + str(BLOCK_REWARD) + str(nonce)
     signature = bytes.hex(signingKey.sign(certificate.encode("utf-8")))
 
-    return Transaction(COINBASE_ADDRESS, COINBASE_PUBLIC_KEY, receiver, BLOCK_REWARD, certificate, signature, random.randint(0, TRANSACTION_NONCE_RANGE))
+    return Transaction(COINBASE_ADDRESS, COINBASE_PUBLIC_KEY, receiver, BLOCK_REWARD, certificate, signature, nonce)

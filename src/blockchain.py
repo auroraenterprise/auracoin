@@ -5,7 +5,7 @@ import re
 from src import transactions
 from src.base40 import Base40
 
-difficulty = 1
+difficulty = 5
 
 class ValidationError(Exception):
     pass

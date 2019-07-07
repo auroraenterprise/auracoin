@@ -5,16 +5,26 @@ import re
 from src import transactions
 from src.base40 import Base40
 
-difficulty = 5
+INITIAL_DIFFICULTY = 1
+INITIAL_DIFFICULTY_TARGET = ((2 ** 16) - 1) * (2 ** 220)
+TARGET_SOLVE_TIME = 120 # 2 minutes in seconds
+TARGET_BLOCKS_SOLVED = 1440 # Should last for 2 days
 
 class ValidationError(Exception):
     pass
 
+def calculateTarget(initialDifficultyTarget, difficulty):
+    return initialDifficultyTarget / difficulty
+
+def calculateNextDifficulty(difficulty, solveTime):
+    return difficulty * (TARGET_SOLVE_TIME / solveTime)
+
 class Block:
-    def __init__(self, data, previousHash, address, timestamp = datetime.datetime.now().timestamp()):
+    def __init__(self, data, previousHash, address, difficulty):
         self.data = data
         self.previousHash = previousHash
-        self.timestamp = timestamp
+        self.difficulty = difficulty
+        self.timestamp = datetime.datetime.now().timestamp()
 
         self.nonce = 0
         self.hash = ""
@@ -35,7 +45,11 @@ class Block:
             "body": transactions.newReward(address)
         })
 
-        while not self.hash.startswith("0" * difficulty):
+        self.calculateHash()
+
+        target = calculateTarget(INITIAL_DIFFICULTY_TARGET, self.difficulty)
+
+        while int(self.hash, 16) > target:
             self.nonce += 1
 
             self.calculateHash()
@@ -43,11 +57,29 @@ class Block:
 class Blockchain:
     def __init__(self):
         self.blocks = []
+        self.difficulty = INITIAL_DIFFICULTY
 
     def append(self, block):
         self.blocks.append(block)
+
+        if len(self.blocks) > 1 and len(self.blocks) % TARGET_BLOCKS_SOLVED == 0:
+            summedTimeTaken = 0
+            oldDifficulty = self.difficulty
+
+            for i in range(1, TARGET_BLOCKS_SOLVED):
+                summedTimeTaken += self.blocks[-i].timestamp - self.blocks[-(i + 1)].timestamp
+
+            self.difficulty = calculateNextDifficulty(self.difficulty, summedTimeTaken / TARGET_BLOCKS_SOLVED)
+
+            if self.difficulty < (oldDifficulty / 4):
+                self.difficulty = oldDifficulty / 4
+            
+            if self.difficulty > (oldDifficulty * 4):
+                self.difficulty = oldDifficulty * 4
+
+            print("---- Adjusted difficulty to", self.difficulty, "----") # TODO:
     
-    def verify(self, verbose = True):
+    def verify(self, verbose = False):
         lastTimestamp = 0
         transactionNonces = {}
         registeredAddresses = {
@@ -77,7 +109,10 @@ class Blockchain:
                     raise ValidationError("block " + str(i) + " has invalid previousHash")
                 
             if thisBlock.hash != thisBlock.getHashCalculation():
-                raise ValidationError("block " + str(i) + " has invalid hash")
+                raise ValidationError("block " + str(i) + " has invalid hash (wrong hash calculated)")
+            
+            if int(thisBlock.hash, 16) > calculateTarget(INITIAL_DIFFICULTY_TARGET, thisBlock.difficulty):
+                raise ValidationError("block " + str(i) + " has invalid hash (hash does not adhere to target)")
             
             minerAlreadyRewarded = False
             
@@ -102,10 +137,12 @@ class Blockchain:
                     else:
                         transactionNonces[thisTransaction.sender] = [thisTransaction.nonce]
                     
-                    if thisTransaction.sender == transactions.COINBASE_ADDRESS and thisTransaction.senderPublicKey == transactions.COINBASE_PUBLIC_KEY and not minerAlreadyRewarded:
+                    if thisTransaction.sender == transactions.COINBASE_ADDRESS and thisTransaction.senderPublicKey == transactions.COINBASE_PUBLIC_KEY and thisTransaction.amount == transactions.BLOCK_REWARD and not minerAlreadyRewarded:
                         minerAlreadyRewarded = True
-                    elif thisTransaction.sender == transactions.COINBASE_ADDRESS and thisTransaction.senderPublicKey == transactions.COINBASE_PUBLIC_KEY:
+                    elif thisTransaction.sender == transactions.COINBASE_ADDRESS and thisTransaction.senderPublicKey == transactions.COINBASE_PUBLIC_KEY and thisTransaction.amount == transactions.BLOCK_REWARD:
                         raise ValidationError("block " + str(i) + " data " + str(d) + " is an invalid transaction (miner already rewarded)")
+                    elif thisTransaction.sender == transactions.COINBASE_ADDRESS and thisTransaction.senderPublicKey == transactions.COINBASE_PUBLIC_KEY:
+                        raise ValidationError("block " + str(i) + " data " + str(d) + " is an invalid transaction (miner reward different from block reward)")
                     elif thisTransaction.sender == transactions.COINBASE_ADDRESS:
                         raise ValidationError("block " + str(i) + " data " + str(d) + " is an invalid transaction (wrong public key for coinbase issued)")
                     
@@ -128,12 +165,12 @@ class Blockchain:
                     
                     if len(thisRegistration["publicKey"]) != 128:
                         raise ValidationError("block " + str(i) + " data " + str(d) + " is an invalid registration (incorrect publicKey length)")
+                    
+                    registeredAddresses[thisRegistration["address"]] = thisRegistration["publicKey"]
                 else:
                     raise ValidationError("block " + str(i) + " data " + str(d) + " is of an invalid data type (\"" + thisData["type"] + "\")")
 
-                # TODO: Add block difficulty calculations
-
-def newAddress(previousHash, timestamp = datetime.datetime.now().timestamp()):
+def newAddress(previousHash, difficulty):
     info = transactions.newAddress()
 
     return (
@@ -143,6 +180,6 @@ def newAddress(previousHash, timestamp = datetime.datetime.now().timestamp()):
                 "address": info["address"],
                 "publicKey": info["publicKey"]
             }
-        }], previousHash, transactions.COINBASE_ADDRESS, timestamp),
+        }], previousHash, transactions.COINBASE_ADDRESS, difficulty),
         info
     )

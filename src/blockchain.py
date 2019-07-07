@@ -76,8 +76,6 @@ class Blockchain:
             
             if self.difficulty > (oldDifficulty * 4):
                 self.difficulty = oldDifficulty * 4
-
-            print("---- Adjusted difficulty to", self.difficulty, "----") # TODO:
     
     def verify(self, verbose = False):
         lastTimestamp = 0
@@ -87,7 +85,7 @@ class Blockchain:
         }
 
         for i in range(0, len(self.blocks)):
-            if verbose: print("- Validating block " + str(i) + " (" + str(i + 1) + "/" + str(len(self.blocks)) + ") in blockchain... (" + str((i / len(self.blocks)) * 100) + "%)")
+            if verbose: print("- Verifying block " + str(i) + " (" + str(i + 1) + "/" + str(len(self.blocks)) + ") in blockchain... (" + str((i / len(self.blocks)) * 100) + "%)")
 
             thisBlock = self.blocks[i]
 

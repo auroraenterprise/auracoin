@@ -71,10 +71,10 @@ class Blockchain:
 
             self.difficulty = calculateNextDifficulty(self.difficulty, summedTimeTaken / TARGET_BLOCKS_SOLVED)
 
-            if self.difficulty < (oldDifficulty / 4):
+            if self.difficulty < oldDifficulty / 4:
                 self.difficulty = oldDifficulty / 4
             
-            if self.difficulty > (oldDifficulty * 4):
+            if self.difficulty > oldDifficulty * 4:
                 self.difficulty = oldDifficulty * 4
     
     def verify(self, verbose = False):

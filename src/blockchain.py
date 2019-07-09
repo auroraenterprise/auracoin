@@ -6,7 +6,7 @@ from src import transactions
 from src.base40 import Base40
 
 INITIAL_DIFFICULTY = 1
-INITIAL_DIFFICULTY_TARGET = ((2 ** 16) - 1) * (2 ** 220)
+INITIAL_DIFFICULTY_TARGET = ((2 ** 16) - 1) * (2 ** 216)
 TARGET_SOLVE_TIME = 120 # 2 minutes in seconds
 TARGET_BLOCKS_SOLVED = 1440 # Should last for 2 days
 

@@ -1,4 +1,5 @@
 import urllib
+import urllib.request
 import json
 import shutil
 import os
@@ -33,7 +34,7 @@ def getBestPeerBlockchain():
             if server.verbose: print("- Checking peer blockchain " + peer + "...")
 
             peerConnector = urllib.request.urlopen(peer + "/getBlockchain")
-            peerBlockchainData = json.load(peerConnector)
+            peerBlockchainData = json.loads(peerConnector.read().decode("utf-8"))
 
             peerConnector.close()
 
@@ -64,15 +65,20 @@ def getBestPeerBlockchain():
                             "type": "data",
                             "body": item["type"],
                         })
-
-                blocks.append(blockchain.Block(
+                
+                newBlock = blockchain.Block(
                     data = newData,
                     previousHash = block["previousHash"],
+                    address = block["address"],
                     difficulty = block["difficulty"],
-                    timestamp = block["timestamp"],
-                    hash = block["hash"],
                     mine = False
-                ))
+                )
+
+                newBlock.timestamp = block["timestamp"]
+                newBlock.nonce = block["nonce"]
+                newBlock.hash = block["hash"]
+
+                blocks.append(newBlock)
             
             peerBlockchain.blocks = blocks
             peerBlockchain.difficulty = peerBlockchainData["difficulty"]

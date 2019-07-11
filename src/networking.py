@@ -55,6 +55,7 @@ def getBlockchain():
 
         blocks.append({
             "data": data,
+            "address": block.address,
             "previousHash": block.previousHash,
             "difficulty": block.difficulty,
             "timestamp": block.timestamp,

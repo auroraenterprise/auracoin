@@ -1,36 +1,39 @@
-from src import blockchain
+import argparse
+import shutil
+import os
+import sys
 
-bc = blockchain.Blockchain()
+from src import blockchain, storage, transactions, server
 
-bc.append(blockchain.Block(
-    data = [{
-        "type": "data",
-        "body": "Hello, world! This is the genesis block."
-    }],
-    previousHash = "0" * 64,
-    address = "0" * 10,
-    difficulty = blockchain.INITIAL_DIFFICULTY
-))
+cli = argparse.ArgumentParser(
+    prog = "auracoin",
+    description = "Aurora's new cryptocurrency integrated with Aurachain."
+)
 
-print(bc.blocks, bc.blocks[-1].data, bc.blocks[-1].hash)
+cli.add_argument("-v", "--verbose", help = "show verbose output when running")
 
-myAddressInfo = blockchain.newAddress(bc.blocks[-1].hash, bc.difficulty)
+arguments = cli.parse_args()
 
-bc.append(myAddressInfo[0])
+config = {}
 
-print(bc.blocks, bc.blocks[-1].data, bc.blocks[-1].hash)
+try:
+    config["address"] = storage.getConfigItem("Account", "address")
+    config["publicKey"] = storage.getConfigItem("Account", "publicKey")
+    config["privateKey"] = storage.getConfigItem("Account", "privateKey")
 
-bc.verify(True)
+    assert len(config["address"]) == transactions.ADDRESS_LENGTH
+    assert len(config["publicKey"]) == 128
+    assert len(config["privateKey"]) == 64
+except:
+    print("Your configuration file at ~/.auracoin/config.auc is missing or not configured properly.")
 
-while True:
-    bc.append(blockchain.Block(
-        data = [{
-            "type": "data",
-            "body": "Testing!"
-        }],
-        previousHash = bc.blocks[-1].hash,
-        address = myAddressInfo[1]["address"],
-        difficulty = bc.difficulty
-    ))
+    try:
+        shutil.copytree("config", storage.CONFIG_FOLDER)
 
-    print(bc.blocks, bc.blocks[-1].data, bc.blocks[-1].hash)
+        print("It has been automatically added along with other files; please configure it in order to run headless.")
+    except:
+        print("Automatic creation failed, please create the file and any other needed files.")
+
+    sys.exit(1)
+
+server.serve()

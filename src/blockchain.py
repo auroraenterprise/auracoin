@@ -24,7 +24,7 @@ class Block:
         self.data = data
         self.previousHash = previousHash
         self.difficulty = difficulty
-        self.timestamp = datetime.datetime.now().timestamp()
+        self.timestamp = datetime.datetime.utcnow().timestamp()
 
         self.nonce = 0
         self.hash = ""

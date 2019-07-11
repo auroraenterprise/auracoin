@@ -69,7 +69,7 @@ def getBestPeerBlockchain():
                 newBlock = blockchain.Block(
                     data = newData,
                     previousHash = block["previousHash"],
-                    address = block["address"],
+                    address = "",
                     difficulty = block["difficulty"],
                     mine = False
                 )

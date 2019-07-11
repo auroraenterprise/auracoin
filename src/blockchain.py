@@ -1,6 +1,7 @@
 import datetime
 import hashlib
 import re
+import pickle
 
 from src import transactions
 from src.base40 import Base40
@@ -32,8 +33,13 @@ class Block:
         self.mine(address)
     
     def getHashCalculation(self):
+        dataString = ""
+
+        for item in self.data:
+            dataString += item["type"] + str(item["body"])
+
         return hashlib.sha256((
-            str(self.data) + str(self.previousHash) + str(self.timestamp) + str(self.nonce)
+            dataString + str(self.previousHash) + str(self.timestamp) + str(self.difficulty) + str(self.nonce)
         ).encode("utf-8")).hexdigest()
       
     def calculateHash(self):
@@ -53,7 +59,7 @@ class Block:
             self.nonce += 1
 
             self.calculateHash()
-
+        
 class Blockchain:
     def __init__(self):
         self.blocks = []
@@ -82,6 +88,9 @@ class Blockchain:
         transactionNonces = {}
         registeredAddresses = {
             transactions.COINBASE_ADDRESS: transactions.COINBASE_PUBLIC_KEY
+        }
+        addressBalances = {
+            transactions.COINBASE_ADDRESS: 0
         }
 
         for i in range(0, len(self.blocks)):
@@ -136,6 +145,7 @@ class Blockchain:
                         transactionNonces[thisTransaction.sender] = [thisTransaction.nonce]
                     
                     if thisTransaction.sender == transactions.COINBASE_ADDRESS and thisTransaction.senderPublicKey == transactions.COINBASE_PUBLIC_KEY and thisTransaction.amount == transactions.BLOCK_REWARD and not minerAlreadyRewarded:
+                        addressBalances[thisTransaction.sender] += transactions.BLOCK_REWARD
                         minerAlreadyRewarded = True
                     elif thisTransaction.sender == transactions.COINBASE_ADDRESS and thisTransaction.senderPublicKey == transactions.COINBASE_PUBLIC_KEY and thisTransaction.amount == transactions.BLOCK_REWARD:
                         raise ValidationError("block " + str(i) + " data " + str(d) + " is an invalid transaction (miner already rewarded)")
@@ -152,6 +162,14 @@ class Blockchain:
                     
                     if thisTransaction.receiver not in registeredAddresses:
                         raise ValidationError("block " + str(i) + " data " + str(d) + " is an invalid transaction (receiver address doesn't exist)")
+                    
+                    if thisTransaction.sender != transactions.COINBASE_ADDRESS:
+                        if addressBalances[thisTransaction.sender] < thisTransaction.amount:
+                            raise ValidationError("block " + str(i) + " data " + str(d) + " is an invalid transaction (sender has insufficient balance)")
+                        else:
+                            addressBalances[thisTransaction.sender] -= thisTransaction.amount
+                    
+                    addressBalances[thisTransaction.receiver] += thisTransaction.amount
                 elif thisData["type"] == "registration":
                     thisRegistration = thisData["body"]
 
@@ -165,6 +183,7 @@ class Blockchain:
                         raise ValidationError("block " + str(i) + " data " + str(d) + " is an invalid registration (incorrect publicKey length)")
                     
                     registeredAddresses[thisRegistration["address"]] = thisRegistration["publicKey"]
+                    addressBalances[thisRegistration["address"]] = 0
                 else:
                     raise ValidationError("block " + str(i) + " data " + str(d) + " is of an invalid data type (\"" + thisData["type"] + "\")")
 

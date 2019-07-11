@@ -2,3 +2,6 @@
 address = 
 publicKey = 
 privateKey = 
+
+[Peers]
+peerList = about:blank

@@ -25,21 +25,36 @@ class Handler(http.server.BaseHTTPRequestHandler):
             returnMessage = networking.getBlockchain()
         elif path == "/handleData":
             if "data" in queries:
-                returnMessage = networking.handleData(queries["data"])
+                returnMessage = networking.handleData(queries["data"][0])
             else:
                 returnMessage = "Status/fail/format"
         elif path == "/handleTransaction":
             if all(key in queries for key in ("sender", "senderPublicKey", "receiver", "amount", "certificate", "signature", "nonce")):
                 returnMessage = networking.handleData(
-                    sender = queries["sender"],
-                    senderPublicKey = queries["senderPublicKey"],
-                    receiver = queries["receiver"],
-                    amount = queries["amount"],
-                    certificate = queries["certificate"],
-                    signature = queries["signature"],
-                    nonce = queries["nonce"],
+                    sender = queries["sender"][0],
+                    senderPublicKey = queries["senderPublicKey"][0],
+                    receiver = queries["receiver"][0],
+                    amount = queries["amount"][0],
+                    certificate = queries["certificate"][0],
+                    signature = queries["signature"][0],
+                    nonce = queries["nonce"][0],
                     verbose = verbose
                 )
+        elif path == "/getAddressPublicKey":
+            if "address" in queries:
+                publicKey = networking.checkAddress(queries["address"][0])
+
+                if publicKey == None:
+                    returnMessage = "Status/fail/exist"
+                else:
+                    returnMessage = "Status/ok/" + publicKey
+            else:
+                returnMessage = "Status/fail/format"
+        elif path == "/getAddressBalance":
+            if "address" in queries:
+                balance = networking.checkBalance(queries["address"][0])
+
+                returnMessage = "Status/ok/" + str(balance)
             else:
                 returnMessage = "Status/fail/format"
         elif path == "/handleRegistration":
@@ -56,7 +71,9 @@ class Handler(http.server.BaseHTTPRequestHandler):
 
 def serve():
     socketserver.TCPServer.allow_reuse_address = True
-    httpSocket = socketserver.TCPServer(("", 5000), Handler)
+    httpSocket = socketserver.TCPServer((storage.getConfigItem("Peers", "outboundIP"), int(storage.getConfigItem("Peers", "outboundPort"))), Handler)
+
+    if verbose: print("- Serving port {}:{}...".format(storage.getConfigItem("Peers", "outboundIP"), storage.getConfigItem("Peers", "outboundPort")))
 
     try:
         httpSocket.serve_forever()

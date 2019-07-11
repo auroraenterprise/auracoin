@@ -27,6 +27,9 @@ class Transaction:
         self.certificate = certificate
         self.signature = signature
         self.nonce = nonce
+    
+    def __str__(self):
+        return self.getCertificate()
 
     def getCertificate(self):
         return str(self.sender) + str(self.senderPublicKey) + str(self.receiver) + str(self.amount) + str(self.nonce)

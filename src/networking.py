@@ -1,17 +1,41 @@
 import os
+import pickle
 
 from src import storage, transactions
 
 nodeBlockchain = None
 nodeRequests = []
 
+def checkAddress(address):
+    try:
+        for block in nodeBlockchain.blocks:
+            for item in block.data:
+                if item["type"] == "registration":
+                    if item["body"]["address"] == address:
+                        return item["body"]["publicKey"]
+        
+        return None
+    except:
+        return None
+
+def checkBalance(address):
+    amount = 0
+
+    try:
+        for block in nodeBlockchain.blocks:
+            for item in block.data:
+                if item["type"] == "transaction":
+                    if item["body"].sender == address:
+                        amount -= item["body"].amount
+                    elif item["body"].receiver == address:
+                        amount += item["body"].amount
+        
+        return amount
+    except:
+        return 0
+
 def getBlockchain():
-    file = open(os.path.join(storage.CONFIG_FOLDER, "blockchain.auo"), "rb")
-    returns = file.read()
-
-    file.close()
-
-    return returns
+    return pickle.dumps(nodeBlockchain)
 
 def handleData(data, verbose = False):
     nodeRequests.append({
@@ -24,6 +48,15 @@ def handleData(data, verbose = False):
     return "Status/ok"
 
 def handleTransaction(sender, senderPublicKey, receiver, amount, certificate, signature, nonce, verbose = False):
+    if checkAddress(sender) == None:
+        return "Status/fail/exist"
+    
+    if checkAddress(receiver) == None:
+        return "Status/fail/exist"
+
+    if checkBalance(sender) < amount:
+        return "Status/fail/balance"
+
     transaction = transactions.Transaction(sender, senderPublicKey, receiver, amount, certificate, signature, nonce)
 
     if transaction.verify():
@@ -42,6 +75,9 @@ def handleTransaction(sender, senderPublicKey, receiver, amount, certificate, si
     
 def handleRegistration():
     info = transactions.newAddress()
+
+    if checkAddress(info["address"]) != None:
+        return "Status/fail/exist"
 
     nodeRequests.append({
         "type": "registration",

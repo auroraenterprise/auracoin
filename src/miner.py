@@ -1,5 +1,5 @@
 import urllib
-import pickle
+import json
 import shutil
 import os
 
@@ -33,9 +33,49 @@ def getBestPeerBlockchain():
             if server.verbose: print("- Checking peer blockchain " + peer + "...")
 
             peerConnector = urllib.request.urlopen(peer + "/getBlockchain")
-            peerBlockchain = pickle.load(peerConnector)
+            peerBlockchainData = json.load(peerConnector)
 
             peerConnector.close()
+
+            peerBlockchain = blockchain.Blockchain()
+            blocks = []
+
+            for block in peerBlockchainData["blocks"]:
+                newData = []
+
+                for item in block["data"]:
+                    if item["type"] == "transaction":
+                        newTransaction = transactions.Transaction(
+                            sender = item["body"]["sender"],
+                            senderPublicKey = item["body"]["senderPublicKey"],
+                            receiver = item["body"]["receiver"],
+                            amount = item["body"]["amount"],
+                            certificate = item["body"]["certificate"],
+                            signature = item["body"]["signature"],
+                            nonce = item["body"]["nonce"]
+                        )
+
+                        newData.append({
+                            "type": "data",
+                            "body": newTransaction,
+                        })
+                    else:
+                        newData.append({
+                            "type": "data",
+                            "body": item["type"],
+                        })
+
+                blocks.append(blockchain.Block(
+                    data = newData,
+                    previousHash = block["previousHash"],
+                    difficulty = block["difficulty"],
+                    timestamp = block["timestamp"],
+                    hash = block["hash"],
+                    mine = False
+                ))
+            
+            peerBlockchain.blocks = blocks
+            peerBlockchain.difficulty = peerBlockchainData["difficulty"]
 
             if (
                 peerBlockchain.__init__.__code__ == blockchain.Blockchain.__init__.__code__ and

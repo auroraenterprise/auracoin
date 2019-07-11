@@ -1,7 +1,6 @@
 import datetime
 import hashlib
 import re
-import pickle
 
 from src import transactions
 from src.base40 import Base40
@@ -21,7 +20,7 @@ def calculateNextDifficulty(difficulty, solveTime):
     return difficulty * (TARGET_SOLVE_TIME / solveTime)
 
 class Block:
-    def __init__(self, data, previousHash, address, difficulty):
+    def __init__(self, data, previousHash, address, difficulty, mine = True):
         self.data = data
         self.previousHash = previousHash
         self.difficulty = difficulty
@@ -30,7 +29,8 @@ class Block:
         self.nonce = 0
         self.hash = ""
 
-        self.mine(address)
+        if mine:
+            self.mine(address)
     
     def getHashCalculation(self):
         dataString = ""

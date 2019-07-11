@@ -1,7 +1,7 @@
 import os
-import pickle
+import json
 
-from src import storage, transactions
+from src import transactions, storage, transactions
 
 nodeBlockchain = None
 nodeRequests = []
@@ -35,7 +35,37 @@ def checkBalance(address):
         return 0
 
 def getBlockchain():
-    return pickle.dumps(nodeBlockchain)
+    blocks = []
+    difficulty = nodeBlockchain.difficulty
+
+    for block in nodeBlockchain.blocks:
+        data = []
+
+        for item in block.data:
+            if isinstance(item["body"], transactions.Transaction):
+                data.append({
+                    "type": item["type"],
+                    "body": item["body"].__dict__
+                })
+            else:
+                data.append({
+                    "type": item["type"],
+                    "body": item["body"]
+                })
+
+        blocks.append({
+            "data": data,
+            "previousHash": block.previousHash,
+            "difficulty": block.difficulty,
+            "timestamp": block.timestamp,
+            "nonce": block.nonce,
+            "hash": block.hash
+        })
+
+    return json.dumps({
+        "blocks": blocks,
+        "difficulty": difficulty
+    })
 
 def handleData(data, verbose = False):
     nodeRequests.append({

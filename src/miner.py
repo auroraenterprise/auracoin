@@ -57,13 +57,13 @@ def getBestPeerBlockchain():
                         )
 
                         newData.append({
-                            "type": "data",
+                            "type": item["type"],
                             "body": newTransaction,
                         })
                     else:
                         newData.append({
-                            "type": "data",
-                            "body": item["type"],
+                            "type": item["type"],
+                            "body": item["body"],
                         })
                 
                 newBlock = blockchain.Block(
@@ -83,6 +83,11 @@ def getBestPeerBlockchain():
             peerBlockchain.blocks = blocks
             peerBlockchain.difficulty = peerBlockchainData["difficulty"]
 
+            dataString = ""
+
+            for item in peerBlockchain.blocks[1].data:
+                dataString += item["type"] + str(item["body"])
+            
             if (
                 peerBlockchain.__init__.__code__ == blockchain.Blockchain.__init__.__code__ and
                 peerBlockchain.append.__code__ == blockchain.Blockchain.append.__code__ and

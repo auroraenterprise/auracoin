@@ -36,7 +36,10 @@ class Block:
         dataString = ""
 
         for item in self.data:
-            dataString += item["type"] + str(item["body"])
+            if item["type"] == "registration":
+                dataString += item["type"] + item["body"]["address"] + item["body"]["publicKey"]
+            else:
+                dataString += item["type"] + str(item["body"])
 
         return hashlib.sha256((
             dataString + str(self.previousHash) + str(self.timestamp) + str(self.difficulty) + str(self.nonce)

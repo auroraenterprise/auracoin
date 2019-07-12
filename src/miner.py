@@ -1,5 +1,6 @@
 import urllib
 import urllib.request
+import ssl
 import json
 import shutil
 import os
@@ -18,7 +19,8 @@ def getBestPeerBlockchain():
         highestDifficultySum = 0
 
         peerListURL = storage.getConfigItem("Peers", "peerList")
-        peerListConnector = urllib.request.urlopen(peerListURL)
+        context = ssl._create_unverified_context()
+        peerListConnector = urllib.request.urlopen(peerListURL, context = context)
         peerList = peerListConnector.read().decode("utf-8").split("\n")
         finalPeers = []
 

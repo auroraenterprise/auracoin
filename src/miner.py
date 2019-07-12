@@ -150,11 +150,15 @@ def start():
         if currentCount % SAVE_FREQUENCY == 0:
             if server.verbose: print("- Saving blockchain to file...")
 
-            shutil.copyfile(os.path.join(storage.CONFIG_FOLDER, "blockchain.auo"), os.path.join(storage.CONFIG_FOLDER, "blockchain.auo.old"))
+            try:
+                shutil.copyfile(os.path.join(storage.CONFIG_FOLDER, "blockchain.auo"), os.path.join(storage.CONFIG_FOLDER, "blockchain.auo.old"))
+            except: pass
 
             storage.saveObject(networking.nodeBlockchain, "blockchain")
 
-            os.remove(os.path.join(storage.CONFIG_FOLDER, "blockchain.auo.old"))
+            try:
+                os.remove(os.path.join(storage.CONFIG_FOLDER, "blockchain.auo.old"))
+            except: pass
 
             if server.verbose: print("- Saved blockchain to file ~/.auracoin/blockchain.auo")
         

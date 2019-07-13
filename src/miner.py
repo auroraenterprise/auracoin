@@ -9,7 +9,7 @@ from src import blockchain, storage, server, networking, transactions
 
 PEER_CHECK_FREQUENCY = 16
 SAVE_FREQUENCY = 4
-VERIFY_FREQUENCY = 1
+VERIFY_FREQUENCY = 4
 
 def getBestPeerBlockchain():
     try:

@@ -166,6 +166,9 @@ class Blockchain:
                     if thisTransaction.receiver not in registeredAddresses:
                         raise ValidationError("block " + str(i) + " data " + str(d) + " is an invalid transaction (receiver address doesn't exist)")
                     
+                    if thisTransaction.amount <= 0:
+                        raise ValidationError("block " + str(i) + " data " + str(d) + " is an invalid transaction (invalid amount)")
+                    
                     if thisTransaction.sender != transactions.COINBASE_ADDRESS:
                         if addressBalances[thisTransaction.sender] < thisTransaction.amount:
                             raise ValidationError("block " + str(i) + " data " + str(d) + " is an invalid transaction (sender has insufficient balance)")

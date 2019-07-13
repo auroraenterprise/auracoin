@@ -9,7 +9,7 @@ from src import blockchain, storage, server, networking, transactions
 
 PEER_CHECK_FREQUENCY = 16
 SAVE_FREQUENCY = 4
-VERIFY_FREQUENCY = 4
+VERIFY_FREQUENCY = 1
 
 def getBestPeerBlockchain():
     try:
@@ -20,7 +20,7 @@ def getBestPeerBlockchain():
 
         peerListURL = storage.getConfigItem("Peers", "peerList")
         context = ssl._create_unverified_context()
-        peerListConnector = urllib.request.urlopen(peerListURL, context = context)
+        peerListConnector = urllib.request.urlopen(peerListURL, context = context, timeout = int(storage.getConfigItem("Peers", "peerTimeout")))
         peerList = peerListConnector.read().decode("utf-8").split("\n")
         finalPeers = []
 
@@ -33,68 +33,73 @@ def getBestPeerBlockchain():
                 finalPeers.append(peer)
         
         for peer in finalPeers:
-            if server.verbose: print("- Checking peer blockchain " + peer + "...")
+            try:
+                if server.verbose: print("- Checking peer blockchain " + peer + "...")
 
-            peerConnector = urllib.request.urlopen(peer + "/getBlockchain")
-            peerBlockchainData = json.loads(peerConnector.read().decode("utf-8"))
+                peerConnector = urllib.request.urlopen(peer + "/getBlockchain")
+                peerBlockchainData = json.loads(peerConnector.read().decode("utf-8"))
 
-            peerConnector.close()
+                peerConnector.close()
 
-            peerBlockchain = blockchain.Blockchain()
-            blocks = []
+                peerBlockchain = blockchain.Blockchain()
+                blocks = []
 
-            for block in peerBlockchainData["blocks"]:
-                newData = []
+                for block in peerBlockchainData["blocks"]:
+                    newData = []
 
-                for item in block["data"]:
-                    if item["type"] == "transaction":
-                        newTransaction = transactions.Transaction(
-                            sender = item["body"]["sender"],
-                            senderPublicKey = item["body"]["senderPublicKey"],
-                            receiver = item["body"]["receiver"],
-                            amount = item["body"]["amount"],
-                            certificate = item["body"]["certificate"],
-                            signature = item["body"]["signature"],
-                            nonce = item["body"]["nonce"]
-                        )
+                    for item in block["data"]:
+                        if item["type"] == "transaction":
+                            newTransaction = transactions.Transaction(
+                                sender = item["body"]["sender"],
+                                senderPublicKey = item["body"]["senderPublicKey"],
+                                receiver = item["body"]["receiver"],
+                                amount = item["body"]["amount"],
+                                certificate = item["body"]["certificate"],
+                                signature = item["body"]["signature"],
+                                nonce = item["body"]["nonce"]
+                            )
 
-                        newData.append({
-                            "type": item["type"],
-                            "body": newTransaction,
-                        })
-                    else:
-                        newData.append({
-                            "type": item["type"],
-                            "body": item["body"],
-                        })
+                            newData.append({
+                                "type": item["type"],
+                                "body": newTransaction,
+                            })
+                        else:
+                            newData.append({
+                                "type": item["type"],
+                                "body": item["body"],
+                            })
+                    
+                    newBlock = blockchain.Block(
+                        data = newData,
+                        previousHash = block["previousHash"],
+                        address = "",
+                        difficulty = block["difficulty"],
+                        mine = False
+                    )
+
+                    newBlock.timestamp = block["timestamp"]
+                    newBlock.nonce = block["nonce"]
+                    newBlock.hash = block["hash"]
+
+                    blocks.append(newBlock)
                 
-                newBlock = blockchain.Block(
-                    data = newData,
-                    previousHash = block["previousHash"],
-                    address = "",
-                    difficulty = block["difficulty"],
-                    mine = False
-                )
+                peerBlockchain.blocks = blocks
+                peerBlockchain.difficulty = peerBlockchainData["difficulty"]
 
-                newBlock.timestamp = block["timestamp"]
-                newBlock.nonce = block["nonce"]
-                newBlock.hash = block["hash"]
+                dataString = ""
 
-                blocks.append(newBlock)
-            
-            peerBlockchain.blocks = blocks
-            peerBlockchain.difficulty = peerBlockchainData["difficulty"]
+                for item in peerBlockchain.blocks[1].data:
+                    dataString += item["type"] + str(item["body"])
+                
+                if not (
+                    peerBlockchain.__init__.__code__ == blockchain.Blockchain.__init__.__code__ and
+                    peerBlockchain.append.__code__ == blockchain.Blockchain.append.__code__ and
+                    peerBlockchain.verify.__code__ == blockchain.Blockchain.verify.__code__
+                ):
+                    peerBlockchain.__init__ = blockchain.Blockchain.__init__
+                    peerBlockchain.append = blockchain.Blockchain.append
+                    peerBlockchain.verify = blockchain.Blockchain.verify
 
-            dataString = ""
-
-            for item in peerBlockchain.blocks[1].data:
-                dataString += item["type"] + str(item["body"])
-            
-            if (
-                peerBlockchain.__init__.__code__ == blockchain.Blockchain.__init__.__code__ and
-                peerBlockchain.append.__code__ == blockchain.Blockchain.append.__code__ and
-                peerBlockchain.verify.__code__ == blockchain.Blockchain.verify.__code__
-            ):
                 try:
                     peerBlockchain.verify(server.verbose)
 
@@ -111,6 +116,8 @@ def getBestPeerBlockchain():
                         finalBlockchain = peerBlockchain
                 except Exception as e:
                     if server.verbose: print("- Rejected peer blockchain: " + str(e))
+            except:
+                if server.verbose: print("- Couldn't check peer, maybe because it is down or off")
         
         if server.verbose: print("- Best blockchain found")
 

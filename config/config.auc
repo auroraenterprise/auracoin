@@ -5,3 +5,6 @@ privateKey =
 
 [Peers]
 peerList = about:blank
+outboundIP = 
+outboundPort = 5000
+peerTimeout = 3

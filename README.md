@@ -30,3 +30,14 @@ Ready? [Get started with contributing to Auracoin!](docs/contribute.md)
 
 ## Licence
 Auracoin is licensed by the [Aurora Open-Source Licence](LICENCE.md).
+
+## Aurora team
+Auracoin was made with ❤ by James, Seb, Herbie and Caspar at Aurora Enterprise.
+
+### Aurora team members
+[![James-Livesey's avatar](https://avatars1.githubusercontent.com/u/42580341?s=64&v=4)](https://github.com/James-Livesey)
+[![sebastiandoe5's avatar](https://avatars0.githubusercontent.com/u/39373619?s=64&v=4)](https://github.com/sebastiandoe5)
+[<img src="https://avatars2.githubusercontent.com/u/48385702?s=64&v=4" height="64" alt="HerbieHolness's avatar" />](https://github.com/HerbieHolness)
+[![Bl-end-er's avatar](https://avatars1.githubusercontent.com/u/44194866?s=64&v=4)](https://github.com/Bl-end-er)
+
+You could be on this list! Contribute today. 😀

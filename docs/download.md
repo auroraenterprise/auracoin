@@ -58,6 +58,9 @@ With that IP address (should be starting with `192.168.` etc., but there are
 exceptions), enter it into the `outboundIP` property under the `Peers` section
 of `config.auc`.
 
+You can change the port that Auracoin runs on by changing `outboundPort` in
+`config.auc`.
+
 When you need to run the miner, navigate to the folder containing your Auracoin
 repository download and open `main.py`. Alternatively, you could type
 `py main.py` in Command Prompt in the respective directory, or if you want it
@@ -104,6 +107,9 @@ type `ifconfig`. Find your IPv4 address for your adapter.
 With that IP address (should be starting with `192.168.` etc., but there are
 exceptions), enter it into the `outboundIP` property under the `Peers` section
 of `config.auc`.
+
+You can change the port that Auracoin runs on by changing `outboundPort` in
+`config.auc`.
 
 When you need to run the miner, navigate to the folder containing your Auracoin
 repository download and open `main.py`. Alternatively, you could type
@@ -153,6 +159,9 @@ terminal and type `ifconfig`. Find your IPv4 address for your adapter.
 With that IP address (should be starting with `192.168.` etc., but there are
 exceptions), enter it into the `outboundIP` property under the `Peers` section
 of `config.auc`.
+
+You can change the port that Auracoin runs on by changing `outboundPort` in
+`config.auc`.
 
 When you need to run the miner, navigate to the folder containing your Auracoin
 repository download and open `main.py`. Alternatively, you could type

@@ -1,4 +1,4 @@
-<img src="docs/logo.png" height="100" align="right" style="float: right; margin: 10px;">
+[<img src="docs/logo.png" height="100" align="right" style="float: right; margin: 10px;">](https://aur.xyz)
 
 # Auracoin
 Aurora's new cryptocurrency integrated with Aurachain. [aur.xyz](https://aur.xyz)

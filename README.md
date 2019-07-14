@@ -19,7 +19,7 @@ The Auracoin implementation is designed to store incoming transactions, verify
 them and secure them by mining them. The more people who want to take part in
 mining, the securer Auracoin can be!
 
-Ready? [Get started with Downloading the Auracoin miner!](docs/download.md)
+Ready? [Get started with downloading the Auracoin miner!](docs/download.md)
 
 ### Contribute code to Auracoin
 Auracoin seeks to embrace the help of the community. Whether you're contributing

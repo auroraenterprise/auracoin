@@ -21,6 +21,13 @@ mining, the securer Auracoin can be!
 
 Ready? [Get started with downloading the Auracoin miner!](docs/download.md)
 
+**Debian/Ubuntu user?** We've made it extra easy to install Auracoin, just type or
+copy and paste this command into your Bash terminal for an interactive setup:
+
+```bash
+wget https://aur.xyz/auracoin/get.sh && bash get.sh && rm get.sh
+```
+
 ### Contribute code to Auracoin
 Auracoin seeks to embrace the help of the community. Whether you're contributing
 security improvements, flattening out bugs, or making the experience much nicer;

@@ -13,6 +13,7 @@ cat ascii.txt
 
 rm ascii.txt
 
+echo ""
 echo -e "\e[1mAuracoin Setup [BETA]"
 echo -e "\e[0m"
 echo "This script installs Auracoin on your device."

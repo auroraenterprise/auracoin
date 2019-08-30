@@ -117,6 +117,23 @@ repository download and open `main.py`. Alternatively, you could type
 to run verbosely, just add a `-v` on the end of the command.
 
 ## Linux (Debian/Ubuntu) installation
+**Good news!** You can easily install Auracoin with this Bash one-liner:
+
+```bash
+wget https://aur.xyz/auracoin/get.sh && bash get.sh && rm get.sh
+```
+
+You will be easily guided step-by-step as to how to install Auracoin. It cuts
+out all of the mundane tasks and allows you to have a rest from the command
+line! 😀
+
+If you already have some of the requirements listed below, the script will skip
+over installing those requirements, which saves time.
+
+The script is still in beta, so please report any bugs by opening up a new issue
+on this repo.
+
+### Alternative/manual method
 Make sure that you have [Python 3](https://www.python.org/downloads/) downloaded and installed.
 Because it's Linux, you probably already have it installed!
 

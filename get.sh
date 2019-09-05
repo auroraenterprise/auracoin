@@ -1,5 +1,12 @@
 #!/bin/bash
 
+# Auracoin
+# 
+# Copyright (C) Aurora Enterprise. All Rights Reserved.
+# 
+# https://aur.xyz
+# Licensed by the Auracoin Open-Source Licence, which can be found at LICENCE.md.
+
 clear
 
 echo "Please wait..."

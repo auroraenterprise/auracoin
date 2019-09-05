@@ -2,7 +2,7 @@
 Contributions to Auracoin are most welcome! If you're a developer, feel free to
 contribute to [our GitHub repository](https://github.com/auroraenterprise/auracoin).
 
-If there are any issues, feel free to submit them! Are developers are happy to
+If there are any issues, feel free to submit them! Our developers are happy to
 help with the rectification of problems.
 
 Coded a cool new thing that works with Auracoin? Nice! **Make sure that you test

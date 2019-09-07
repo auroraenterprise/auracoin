@@ -47,6 +47,8 @@ class Handler(http.server.BaseHTTPRequestHandler):
                     nonce = queries["nonce"][0],
                     verbose = verbose
                 )
+            else:
+                returnMessage = "Status/fail/format"
         elif path == "/getAddressPublicKey":
             if "address" in queries:
                 publicKey = networking.checkAddress(queries["address"][0])

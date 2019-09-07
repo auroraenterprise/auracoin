@@ -85,14 +85,14 @@ def handleData(data, verbose = False):
     return "Status/ok"
 
 def handleTransaction(sender, senderPublicKey, receiver, amount, certificate, signature, nonce, verbose = False):
+    if sender == transactions.COINBASE_ADDRESS:
+        return "Status/fail/lazysod"
+        
     if checkAddress(sender) == None:
         return "Status/fail/exist"
     
     if checkAddress(receiver) == None:
         return "Status/fail/exist"
-    
-    if sender == transactions.COINBASE_ADDRESS:
-        return "Status/fail/lazysod"
 
     if checkBalance(sender) < amount:
         return "Status/fail/balance"

@@ -37,7 +37,7 @@ class Handler(http.server.BaseHTTPRequestHandler):
                 returnMessage = "Status/fail/format"
         elif path == "/handleTransaction":
             if all(key in queries for key in ("sender", "senderPublicKey", "receiver", "amount", "certificate", "signature", "nonce")):
-                returnMessage = networking.handleData(
+                returnMessage = networking.handleTransaction(
                     sender = queries["sender"][0],
                     senderPublicKey = queries["senderPublicKey"][0],
                     receiver = queries["receiver"][0],

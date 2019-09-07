@@ -75,6 +75,10 @@ class Handler(http.server.BaseHTTPRequestHandler):
             self.wfile.write(returnMessage.encode("utf-8"))
         else:
             self.wfile.write(returnMessage)
+    
+    def end_headers(self):
+        self.send_header("Access-Control-Allow-Origin", "*")
+        http.server.BaseHTTPRequestHandler.end_headers(self)
 
 def serve():
     socketserver.TCPServer.allow_reuse_address = True

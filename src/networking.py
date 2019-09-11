@@ -128,3 +128,25 @@ def handleRegistration():
     })
 
     return "Registration/{}/{}/{}".format(info["address"], info["publicKey"], info["privateKey"])
+
+def handleRegistrationFromPublicKey(publicKey):
+    if len(publicKey) != 128:
+        return "Status/fail/format"
+
+    try:
+        info = transactions.newAddressFromPublicKey(publicKey)
+
+        nodeRequests.append({
+            "type": "registration",
+            "body": {
+                "address": info["address"],
+                "publicKey": info["publicKey"]
+            }
+        })
+
+        return "RegistrationFromPublicKey/{}/{}/{}".format(info["address"], info["publicKey"])
+    except:
+        return "Status/fail/generation"
+
+    if checkAddress(info["address"]) != None:
+        return "Status/fail/exist"

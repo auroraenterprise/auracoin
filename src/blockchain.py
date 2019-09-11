@@ -213,3 +213,17 @@ def newAddress(previousHash, difficulty):
         }], previousHash, transactions.COINBASE_ADDRESS, difficulty),
         info
     )
+
+def newAddressFromPublicKey(publicKey, previousHash, difficulty):
+    info = transactions.newAddressFromPublicKey(publicKey)
+
+    return (
+        Block([{
+            "type": "registration",
+            "body": {
+                "address": info["address"],
+                "publicKey": info["publicKey"]
+            }
+        }], previousHash, transactions.COINBASE_ADDRESS, difficulty),
+        info
+    )

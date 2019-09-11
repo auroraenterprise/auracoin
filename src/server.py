@@ -68,6 +68,11 @@ class Handler(http.server.BaseHTTPRequestHandler):
                 returnMessage = "Status/fail/format"
         elif path == "/handleRegistration":
             returnMessage = networking.handleRegistration()
+        elif path == "/handleRegistrationFromPublicKey":
+            if "publicKey" in queries:
+                returnMessage = networking.handleRegistrationFromPublicKey(queries["publicKey"][0])
+            else:
+                returnMessage = "Status/fail/format"
         
         self.send_response(200)
         self.send_header("Content-type", contentType)

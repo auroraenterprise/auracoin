@@ -67,6 +67,14 @@ def newAddress():
         "address": address
     }
 
+def newAddressFromPublicKey(publicKey):
+    address = Base40().encode(int(hashlib.sha256(publicKey.encode("utf-8")).hexdigest(), 16))[:ADDRESS_LENGTH]
+
+    return {
+        "publicKey": publicKey,
+        "address": address
+    }
+
 def newReward(receiver):
     nonce = random.randint(0, TRANSACTION_NONCE_RANGE)
     signingKey = ecdsa.SigningKey.from_string(bytes.fromhex(COINBASE_PRIVATE_KEY), curve = ecdsa.SECP256k1)

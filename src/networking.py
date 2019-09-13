@@ -15,11 +15,18 @@ nodeRequests = []
 
 def checkAddress(address):
     try:
+        # Check for blocks on the blockchain
         for block in nodeBlockchain.blocks:
             for item in block.data:
                 if item["type"] == "registration":
                     if item["body"]["address"] == address:
                         return item["body"]["publicKey"]
+
+        # Check for blocks not yet added to the blockchain
+        for item in nodeRequests:
+            if item["type"] == "registration":
+                if item["body"]["address"] == address:
+                    return item["body"]["publicKey"]
         
         return None
     except:

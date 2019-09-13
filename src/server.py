@@ -41,10 +41,10 @@ class Handler(http.server.BaseHTTPRequestHandler):
                     sender = queries["sender"][0],
                     senderPublicKey = queries["senderPublicKey"][0],
                     receiver = queries["receiver"][0],
-                    amount = queries["amount"][0],
+                    amount = int(queries["amount"][0]),
                     certificate = queries["certificate"][0],
                     signature = queries["signature"][0],
-                    nonce = queries["nonce"][0],
+                    nonce = int(queries["nonce"][0]),
                     verbose = verbose
                 )
             else:

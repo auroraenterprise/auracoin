@@ -29,6 +29,7 @@ def checkBalance(address):
     amount = 0
 
     try:
+        # Check for blocks on the blockchain
         for block in nodeBlockchain.blocks:
             for item in block.data:
                 if item["type"] == "transaction":
@@ -36,6 +37,14 @@ def checkBalance(address):
                         amount -= item["body"].amount
                     elif item["body"].receiver == address:
                         amount += item["body"].amount
+        
+        # Check for blocks not yet added to the blockchain
+        for item in nodeRequests:
+            if item["type"] == "transaction":
+                if item["body"].sender == address:
+                    amount -= item["body"].amount
+                elif item["body"].receiver == address:
+                    amount += item["body"].amount
         
         return amount
     except:

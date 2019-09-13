@@ -57,6 +57,25 @@ def checkBalance(address):
     except:
         return 0
 
+def checkTransactionNonceExists(address, nonce):
+    try:
+        # Check for blocks on the blockchain
+        for block in nodeBlockchain.blocks:
+            for item in block.data:
+                if item["type"] == "transaction":
+                    if item["body"].sender == address and item["body"].nonce == nonce:
+                        return True
+        
+        # Check for blocks not yet added to the blockchain
+        for item in nodeRequests:
+            if item["type"] == "transaction":
+                if item["body"].sender == address and item["body"].nonce == nonce:
+                    return True
+        
+        return False
+    except:
+        return False
+
 def getBlockchain():
     blocks = []
     difficulty = nodeBlockchain.difficulty
@@ -112,6 +131,9 @@ def handleTransaction(sender, senderPublicKey, receiver, amount, certificate, si
 
     if checkBalance(sender) < amount:
         return "Status/fail/balance"
+    
+    if checkTransactionNonceExists(sender, nonce):
+        return "Status/fail/nonce"
 
     transaction = transactions.Transaction(sender, senderPublicKey, receiver, amount, certificate, signature, nonce)
 

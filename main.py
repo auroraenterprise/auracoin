@@ -7,11 +7,10 @@
 
 import argparse
 import shutil
-import os
 import sys
 import threading
 
-from src import blockchain, storage, transactions, server, miner
+from src import storage, transactions, server, miner
 
 cli = argparse.ArgumentParser(
     prog = "auracoin",

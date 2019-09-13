@@ -5,10 +5,9 @@
 # https://aur.xyz
 # Licensed by the Aurora Open-Source Licence, which can be found at LICENCE.md.
 
-import os
 import json
 
-from src import transactions, storage, transactions
+from src import transactions, transactions
 
 nodeBlockchain = None
 nodeRequests = []

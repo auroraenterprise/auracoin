@@ -182,7 +182,7 @@ def handleRegistrationFromPublicKey(publicKey):
             }
         })
 
-        return "RegistrationFromPublicKey/{}/{}/{}".format(info["address"], info["publicKey"])
+        return "RegistrationFromPublicKey/{}/{}".format(info["address"], info["publicKey"])
     except:
         return "Status/fail/generation"
 

@@ -174,6 +174,9 @@ def handleRegistrationFromPublicKey(publicKey):
     try:
         info = transactions.newAddressFromPublicKey(publicKey)
 
+        if checkAddress(info["address"]) != None:
+            return "Status/fail/exist"
+
         nodeRequests.append({
             "type": "registration",
             "body": {
@@ -185,6 +188,3 @@ def handleRegistrationFromPublicKey(publicKey):
         return "RegistrationFromPublicKey/{}/{}".format(info["address"], info["publicKey"])
     except:
         return "Status/fail/generation"
-
-    if checkAddress(info["address"]) != None:
-        return "Status/fail/exist"

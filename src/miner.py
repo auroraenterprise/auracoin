@@ -43,7 +43,7 @@ def getBestPeerBlockchain():
             try:
                 if server.verbose: print("- Checking peer blockchain " + peer + "...")
 
-                peerConnector = urllib.request.urlopen(peer + "/getBlockchain")
+                peerConnector = urllib.request.urlopen(peer + "/getBlockchain", timeout = int(storage.getConfigItem("Peers", "peerTimeout")))
                 peerBlockchainData = json.loads(peerConnector.read().decode("utf-8"))
 
                 peerConnector.close()

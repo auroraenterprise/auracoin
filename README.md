@@ -17,7 +17,8 @@ There are many ways that you can get involved with Auracoin, listed below.
 ### Mine Auracoin
 The Auracoin implementation is designed to store incoming transactions, verify
 them and secure them by mining them. The more people who want to take part in
-mining, the securer Auracoin can be!
+mining, the more secure Auracoin can be! For every block that people
+successfully mine, they get a reward of 1 Auracoin too!
 
 Ready? [Get started with downloading the Auracoin miner!](docs/download.md)
 

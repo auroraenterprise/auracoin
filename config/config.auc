@@ -4,7 +4,7 @@ publicKey =
 privateKey = 
 
 [Peers]
-peerList = about:blank
+peerList = https://aur.xyz/auracoin-peers/main-firstlevel.aup
 outboundIP = 
 outboundPort = 5000
 peerTimeout = 3

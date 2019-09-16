@@ -52,14 +52,16 @@ class Transaction:
         else:
             return False
 
+def getAddressFromPublicKey(publicKey):
+    return Base40().encode(int(hashlib.sha256(publicKey.encode("utf-8")).hexdigest(), 16))[:ADDRESS_LENGTH]
+
 def newAddress():
     signingKey = ecdsa.SigningKey.generate(curve = ecdsa.SECP256k1)
     verifyingKey = signingKey.get_verifying_key()
 
     publicKey = bytes.hex(verifyingKey.to_string())
     privateKey = bytes.hex(signingKey.to_string())
-
-    address = Base40().encode(int(hashlib.sha256(publicKey.encode("utf-8")).hexdigest(), 16))[:ADDRESS_LENGTH]
+    address = getAddressFromPublicKey(publicKey)
 
     return {
         "publicKey": publicKey,
@@ -68,7 +70,7 @@ def newAddress():
     }
 
 def newAddressFromPublicKey(publicKey):
-    address = Base40().encode(int(hashlib.sha256(publicKey.encode("utf-8")).hexdigest(), 16))[:ADDRESS_LENGTH]
+    address = getAddressFromPublicKey(publicKey)
 
     return {
         "publicKey": publicKey,

@@ -121,6 +121,12 @@ def handleData(data, verbose = False):
 def handleTransaction(sender, senderPublicKey, receiver, amount, certificate, signature, nonce, verbose = False):
     if sender == transactions.COINBASE_ADDRESS:
         return "Status/fail/lazysod"
+
+    if sender == receiver:
+        return "Status/fail/self"
+
+    if sender != transactions.getAddressFromPublicKey(senderPublicKey):
+        return "Status/fail/public"
         
     if checkAddress(sender) == None:
         return "Status/fail/exist"

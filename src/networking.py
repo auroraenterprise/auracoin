@@ -12,7 +12,27 @@ from src import transactions, transactions
 nodeBlockchain = None
 nodeRequests = []
 
-def checkAddress(address):
+def getAddresses(useUnverified = True):
+    addresses = []
+
+    try:
+        # Check for blocks on the blockchain
+        for block in nodeBlockchain.blocks:
+            for item in block.data:
+                if item["type"] == "registration":
+                    addresses.append(item["body"]["address"])
+
+        if useUnverified:
+            # Check for blocks not yet added to the blockchain
+            for item in nodeRequests:
+                if item["type"] == "registration":
+                    addresses.append(item["body"]["address"])
+        
+        return addresses
+    except:
+        return []
+
+def checkAddress(address, useUnverified = True):
     try:
         # Check for blocks on the blockchain
         for block in nodeBlockchain.blocks:
@@ -21,17 +41,18 @@ def checkAddress(address):
                     if item["body"]["address"] == address:
                         return item["body"]["publicKey"]
 
-        # Check for blocks not yet added to the blockchain
-        for item in nodeRequests:
-            if item["type"] == "registration":
-                if item["body"]["address"] == address:
-                    return item["body"]["publicKey"]
+        if useUnverified:
+            # Check for blocks not yet added to the blockchain
+            for item in nodeRequests:
+                if item["type"] == "registration":
+                    if item["body"]["address"] == address:
+                        return item["body"]["publicKey"]
         
         return None
     except:
         return None
 
-def checkBalance(address):
+def checkBalance(address, useUnverified = True):
     amount = 0
 
     try:
@@ -44,13 +65,14 @@ def checkBalance(address):
                     elif item["body"].receiver == address:
                         amount += item["body"].amount
         
-        # Check for blocks not yet added to the blockchain
-        for item in nodeRequests:
-            if item["type"] == "transaction":
-                if item["body"].sender == address:
-                    amount -= item["body"].amount
-                elif item["body"].receiver == address:
-                    amount += item["body"].amount
+        if useUnverified:
+            # Check for blocks not yet added to the blockchain
+            for item in nodeRequests:
+                if item["type"] == "transaction":
+                    if item["body"].sender == address:
+                        amount -= item["body"].amount
+                    elif item["body"].receiver == address:
+                        amount += item["body"].amount
         
         return amount
     except:
@@ -75,7 +97,7 @@ def checkTransactionNonceExists(address, nonce):
     except:
         return False
 
-def getBlockchain():
+def getBlockchain(cutoff = None):
     blocks = []
     difficulty = nodeBlockchain.difficulty
 
@@ -102,11 +124,25 @@ def getBlockchain():
             "nonce": block.nonce,
             "hash": block.hash
         })
+    
+    addresses = getAddresses(False)
+    verifiedAmounts = {}
 
-    return json.dumps({
-        "blocks": blocks,
-        "difficulty": difficulty
-    })
+    for address in addresses:
+        verifiedAmounts[address] = checkBalance(address, False)
+
+    if cutoff == None:
+        return json.dumps({
+            "blocks": blocks,
+            "difficulty": difficulty,
+            "verifiedAmounts": verifiedAmounts
+        })
+    else:
+        return json.dumps({
+            "blocks": blocks[:cutoff],
+            "difficulty": difficulty,
+            "verifiedAmounts": verifiedAmounts
+        })
 
 def handleData(data, verbose = False):
     nodeRequests.append({

@@ -29,7 +29,13 @@ class Handler(http.server.BaseHTTPRequestHandler):
         elif path == "/getBlockchain":
             contentType = "raw"
 
-            returnMessage = networking.getBlockchain()
+            if "cutoff" in queries:
+                try:
+                    returnMessage = networking.getBlockchain(int(queries["cutoff"][0]))
+                except:
+                    returnMessage = "Status/fail/format"
+            else:
+                returnMessage = networking.getBlockchain()
         elif path == "/handleData":
             if "data" in queries:
                 returnMessage = networking.handleData(queries["data"][0])

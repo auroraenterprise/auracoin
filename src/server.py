@@ -8,6 +8,7 @@
 import http.server
 import socketserver
 import urllib
+import sys
 
 from src import info, storage, networking
 
@@ -95,7 +96,12 @@ class Handler(http.server.BaseHTTPRequestHandler):
 
 def serve():
     socketserver.TCPServer.allow_reuse_address = True
-    httpSocket = socketserver.TCPServer((storage.getConfigItem("Peers", "outboundIP"), int(storage.getConfigItem("Peers", "outboundPort"))), Handler)
+
+    try:
+        httpSocket = socketserver.TCPServer((storage.getConfigItem("Peers", "outboundIP"), int(storage.getConfigItem("Peers", "outboundPort"))), Handler)
+    except:
+        print("Could not start server at {}:{}. Check if IP address and port is usable and free.".format(storage.getConfigItem("Peers", "outboundIP"), storage.getConfigItem("Peers", "outboundPort")))
+        sys.exit(1)
 
     if verbose: print("- Serving port {}:{}...".format(storage.getConfigItem("Peers", "outboundIP"), storage.getConfigItem("Peers", "outboundPort")))
 

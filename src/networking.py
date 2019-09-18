@@ -139,7 +139,7 @@ def getBlockchain(cutoff = None):
         })
     else:
         return json.dumps({
-            "blocks": blocks[:cutoff],
+            "blocks": blocks[-cutoff:],
             "difficulty": difficulty,
             "verifiedAmounts": verifiedAmounts
         })

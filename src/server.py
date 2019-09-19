@@ -29,14 +29,19 @@ class Handler(http.server.BaseHTTPRequestHandler):
             returnMessage = "Auracoin/{}/{}".format(info.VERSION_NUMBER, address)
         elif path == "/getBlockchain":
             contentType = "raw"
+            cutoff = None
+            address = None
 
-            if "cutoff" in queries:
-                try:
-                    returnMessage = networking.getBlockchain(int(queries["cutoff"][0]))
-                except:
-                    returnMessage = "Status/fail/format"
-            else:
-                returnMessage = networking.getBlockchain()
+            try:
+                if "cutoff" in queries:
+                    cutoff = int(queries["cutoff"][0])
+                
+                if "address" in queries:
+                    address = queries["address"][0]
+
+                returnMessage = networking.getBlockchain(cutoff, address)
+            except:
+                returnMessage = "Status/fail/format"
         elif path == "/handleData":
             if "data" in queries:
                 returnMessage = networking.handleData(queries["data"][0])

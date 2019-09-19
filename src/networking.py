@@ -97,7 +97,7 @@ def checkTransactionNonceExists(address, nonce):
     except:
         return False
 
-def getBlockchain(cutoff = None):
+def getBlockchain(cutoff = None, selectedAddress = None):
     blocks = []
     difficulty = nodeBlockchain.difficulty
 
@@ -105,31 +105,40 @@ def getBlockchain(cutoff = None):
         data = []
 
         for item in block.data:
-            if isinstance(item["body"], transactions.Transaction):
-                data.append({
-                    "type": item["type"],
-                    "body": item["body"].__dict__
-                })
-            else:
-                data.append({
-                    "type": item["type"],
-                    "body": item["body"]
-                })
+            if (
+                isinstance(item["body"], transactions.Transaction) and
+                (item["body"].__dict__["sender"] == selectedAddress or item["body"].__dict__["receiver"] == selectedAddress)
+            ) or selectedAddress == None:
+                if isinstance(item["body"], transactions.Transaction):
+                    data.append({
+                        "type": item["type"],
+                        "body": item["body"].__dict__
+                    })
+                else:
+                    data.append({
+                        "type": item["type"],
+                        "body": item["body"]
+                    })
+        
+        if not (selectedAddress != None and data == []):
+            blocks.append({
+                "data": data,
+                "previousHash": block.previousHash,
+                "difficulty": block.difficulty,
+                "timestamp": block.timestamp,
+                "nonce": block.nonce,
+                "hash": block.hash
+            })
 
-        blocks.append({
-            "data": data,
-            "previousHash": block.previousHash,
-            "difficulty": block.difficulty,
-            "timestamp": block.timestamp,
-            "nonce": block.nonce,
-            "hash": block.hash
-        })
-    
-    addresses = getAddresses(False)
     verifiedAmounts = {}
+    
+    if selectedAddress == None:
+        addresses = getAddresses(False)
 
-    for address in addresses:
-        verifiedAmounts[address] = checkBalance(address, False)
+        for address in addresses:
+            verifiedAmounts[address] = checkBalance(address, False)
+    else:
+        verifiedAmounts[selectedAddress] = checkBalance(selectedAddress, False)
 
     if cutoff == None:
         return json.dumps({

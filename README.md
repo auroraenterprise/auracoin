@@ -1,7 +1,7 @@
-[<img src="docs/logo.png" height="100" align="right" style="float: right; margin: 10px;">](https://aur.xyz)
+[<img src="docs/logo.png" height="100" align="right" style="float: right; margin: 10px;">](https://aur.xyz/auracoin)
 
 # Auracoin
-Aurora's new cryptocurrency integrated with Aurachain. [aur.xyz](https://aur.xyz)
+Aurora's new cryptocurrency integrated with Aurachain. [aur.xyz/auracoin](https://aur.xyz/auracoin)
 
 ## What is Auracoin?
 Auracoin is a new cryptocurrency designed to be easy to use and get involved

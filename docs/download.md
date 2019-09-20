@@ -18,7 +18,7 @@ Make sure that you have [Python 3](https://www.python.org/downloads/) downloaded
 
 Open Command Prompt by searching it in the Start menu. Once it's opened,
 navigate to the Auracoin folder, for example with the command
-`cd C:/Users/Me/Documents/Auracoin`.
+`cd C:\Users\Me\Documents\Auracoin`.
 
 In Command Prompt, type `py -m pip install ecdsa` (if that fails, try running
 `py -m pip install ecdsa --user`). `ecdsa` is a library that is needed in order

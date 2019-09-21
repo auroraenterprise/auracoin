@@ -42,24 +42,27 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
     echo "Checking superuser privileges..."
     sudo echo "Superuser working!"
 
-    echo "Installing git... [1/7]"
+    echo "Installing git... [1/8]"
     sudo apt-get install git &> /dev/null
 
-    echo "Installing nano... [2/7]"
+    echo "Installing nano... [2/8]"
     sudo apt-get install nano &> /dev/null
 
-    echo "Installing python3... [3/7]"
+    echo "Installing python3... [3/8]"
     sudo apt-get install python3 &> /dev/null
+
+    echo "Installing pip for python3... [4/8]"
+    sudo apt-get install python3-pip &> /dev/null
     
-    echo "Cloning Auracoin repository... [4/7]"
+    echo "Cloning Auracoin repository... [5/8]"
     git clone https://github.com/auroraenterprise/auracoin.git &> /dev/null
     cd auracoin
 
-    echo "Installing dependency ecdsa... [5/7]"
+    echo "Installing dependency ecdsa... [6/8]"
     sudo python3 -m pip install ecdsa &> /dev/null
     python3 -m pip install ecdsa --user &> /dev/null
 
-    echo "Starting Auracoin for the first time... [6/7]"
+    echo "Starting Auracoin for the first time... [7/8]"
     python3 main.py -v
 
     if [ ! -f ~/.auracoin/config.auc ]; then
@@ -73,7 +76,7 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
         cp config.auc ~/.auracoin/config.auc
     fi
 
-    echo "Opening configuration file... [7/7]"
+    echo "Opening configuration file... [8/8]"
     cd ~/.auracoin
 
     echo ""

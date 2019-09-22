@@ -42,6 +42,8 @@ class Handler(http.server.BaseHTTPRequestHandler):
                 returnMessage = networking.getBlockchain(cutoff, address)
             except:
                 returnMessage = "Status/fail/format"
+        elif path == "/getBlockHeight":
+            returnMessage = "Status/ok/" + str(len(networking.nodeBlockchain.blocks))
         elif path == "/handleData":
             if "data" in queries:
                 returnMessage = networking.handleData(queries["data"][0])

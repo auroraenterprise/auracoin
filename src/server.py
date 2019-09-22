@@ -16,7 +16,7 @@ verbose = False
 
 class Handler(http.server.BaseHTTPRequestHandler):
     def do_GET(self):
-        returnMessage = ""
+        returnMessage = "Status/fail/command"
         contentType = "text/plain"
 
         path = self.path.split("?")[0]

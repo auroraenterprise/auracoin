@@ -52,20 +52,22 @@ This would give you a return message similar to the following:
 After running any command, you either get a return status or a JSON object. Here
 is a list of return statuses that would come in the body of the GET request:
 
-| Status                     | Description                                                                           |
-|----------------------------|---------------------------------------------------------------------------------------|
-| `Status/ok`                | The command ran successfully.                                                         |
-| `Status/ok/[data]`         | The command ran successfully with return data.                                        |
-| `Status/fail/balance`      | The sender does not have enough Auracoin in their balance to execute the command.     |
-| `Status/fail/command`      | The command does not exist.                                                           |
-| `Status/fail/exist`        | The data either already exists (when adding) or does not exist yet (when reading).    |
-| `Status/fail/format`       | The format of the command is incorrect, or an argument is missing.                    |
-| `Status/fail/generation`   | The new piece of data failed to generate.                                             |
-| `Status/fail/lazysod`      | The user tried to make a fake transaction from coinbase to themselves without mining. |
-| `Status/fail/nonce`        | The nonce to create a unique valid hash has already been used before.                 |
-| `Status/fail/public`       | The public key used is incorrect or does not match the address.                       |
-| `Status/fail/self`         | The sender is the same as the receiver.                                               |
-| `Status/fail/verification` | The data or transaction failed to verify correctly and may have a wrong signature.    |
+| Status                                            | Description                                                                           |
+|---------------------------------------------------|---------------------------------------------------------------------------------------|
+| `Status/ok`                                       | The command ran successfully.                                                         |
+| `Status/ok/[data]`                                | The command ran successfully with return data.                                        |
+| `Status/fail/balance`                             | The sender does not have enough Auracoin in their balance to execute the command.     |
+| `Status/fail/command`                             | The command does not exist.                                                           |
+| `Status/fail/exist`                               | The data either already exists (when adding) or does not exist yet (when reading).    |
+| `Status/fail/format`                              | The format of the command is incorrect, or an argument is missing.                    |
+| `Status/fail/generation`                          | The new piece of data failed to generate.                                             |
+| `Status/fail/lazysod`                             | The user tried to make a fake transaction from coinbase to themselves without mining. |
+| `Status/fail/nonce`                               | The nonce to create a unique valid hash has already been used before.                 |
+| `Status/fail/public`                              | The public key used is incorrect or does not match the address.                       |
+| `Status/fail/self`                                | The sender is the same as the receiver.                                               |
+| `Status/fail/verification`                        | The data or transaction failed to verify correctly and may have a wrong signature.    |
+| `Registration/[address]/[publicKey]/[privateKey]` | The registration has completed successfully.                                          |
+| `RegistrationFromPublicKey/[address]/[publicKey]` | The registration with the public key has completed successfully.                      |
 
 ## Simple examples
 Here are some simple examples that you can use to learn how to use the API.

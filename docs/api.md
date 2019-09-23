@@ -3,6 +3,9 @@ Every Auracoin node has an API built-in to allow for the network of nodes to
 communicate. This API is used by wallets, applications and other nodes so that
 the Auracoin network works like clockwork!
 
+To send an API request, please use GET requests only, other types of request
+will not work.
+
 API commands are written after the IP address, so for example if you wanted to
 execute the `/getBlockHeight` command on an Auracoin miner instance connected at
 `127.0.0.1`, you would use:
@@ -44,3 +47,37 @@ This would give you a return message similar to the following:
 | `/getAddressBalance`               | `address`: address                                                                                                                               | Get the current balance of an address, including added or removed amounts that are not yet verified. To get verified amounts, use  `/getBlockchain`.                                                |
 | `/handleRegistration`              |                                                                                                                                                  | Create a new address and get the registration details. This only works reliably for one miner, so it is reccommended for you to generate a keypair and then use `/handleRegistrationFromPublicKey`. |
 | `/handleRegistrationFromPublicKey` | `publicKey`: string                                                                                                                              | Create a new address from an existing public key and get the registration details.                                                                                                                  |
+
+## Return statuses
+After running any command, you either get a return status or a JSON object. Here
+is a list of return statuses that would come in the body of the GET request:
+
+| Status                     | Description                                                                           |
+|----------------------------|---------------------------------------------------------------------------------------|
+| `Status/ok`                | The command ran successfully.                                                         |
+| `Status/ok/[data]`         | The command ran successfully with return data.                                        |
+| `Status/fail/balance`      | The sender does not have enough Auracoin in their balance to execute the command.     |
+| `Status/fail/command`      | The command does not exist.                                                           |
+| `Status/fail/exist`        | The data either already exists (when adding) or does not exist yet (when reading).    |
+| `Status/fail/format`       | The format of the command is incorrect, or an argument is missing.                    |
+| `Status/fail/generation`   | The new piece of data failed to generate.                                             |
+| `Status/fail/lazysod`      | The user tried to make a fake transaction from coinbase to themselves without mining. |
+| `Status/fail/nonce`        | The nonce to create a unique valid hash has already been used before.                 |
+| `Status/fail/public`       | The public key used is incorrect or does not match the address.                       |
+| `Status/fail/self`         | The sender is the same as the receiver.                                               |
+| `Status/fail/verification` | The data or transaction failed to verify correctly and may have a wrong signature.    |
+
+## Simple examples
+Here are some simple examples that you can use to learn how to use the API.
+
+- `http://127.0.0.1/getAddressBalance?address=B4Dfxfp8Ye`
+  
+  Get the current balance of the address `B4Dfxfp8Ye`.
+
+- `http://127.0.0.1/getBlockchain?cutoff=10`
+  
+  Get the current blockchain data, cutting off at 10.
+
+- `http://127.0.0.1/getBlockHeight`
+  
+  Get the current height of the most recent block.

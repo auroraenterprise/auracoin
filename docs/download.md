@@ -20,6 +20,9 @@ Open Command Prompt by searching it in the Start menu. Once it's opened,
 navigate to the Auracoin folder, for example with the command
 `cd C:\Users\Me\Documents\Auracoin`.
 
+> **Note:** On some Windows computers, PIP may not be installed.
+> To fix this, download and run the file [get-pip.py](https://bootstrap.pypa.io/get-pip.py).
+
 In Command Prompt, type `py -m pip install ecdsa` (if that fails, try running
 `py -m pip install ecdsa --user`). `ecdsa` is a library that is needed in order
 to process Auracoin transactions.

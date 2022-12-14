@@ -45,7 +45,7 @@ Auracoin was made with ❤ by James, Seb, Herbie and Caspar at Aurora Enterprise
 
 ### Aurora team members
 [![James-Livesey's avatar](https://avatars1.githubusercontent.com/u/42580341?s=64&v=4)](https://github.com/James-Livesey)
-[![sebastiandoe5's avatar](https://avatars0.githubusercontent.com/u/39373619?s=64&v=4)](https://github.com/sebastiandoe5)
+[![sd0e's avatar](https://avatars0.githubusercontent.com/u/39373619?s=64&v=4)](https://github.com/sd0e)
 [<img src="https://avatars2.githubusercontent.com/u/48385702?s=64&v=4" height="64" alt="HerbieHolness's avatar" />](https://github.com/HerbieHolness)
 [![Bl-end-er's avatar](https://avatars1.githubusercontent.com/u/44194866?s=64&v=4)](https://github.com/Bl-end-er)
 
